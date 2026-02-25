@@ -1,5 +1,4 @@
 
-
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -14,10 +13,10 @@ data = pd.read_csv("Sport_car_price.csv")
 
 # Change data type of columns
 data['Car Make'] = data['Car Make'].astype(str)
-data['Car Model'] = data['Car Model'].astype(str)
-data['Year'] = data['Year'].astype(str)  # Keep 'Year' as string for filtering purposes
 data['Engine Size (L)'] = data['Engine Size (L)'].astype(str)
 data['Horsepower'] = data['Horsepower'].astype(str)
+data['Torque (lb-ft)'] = data['Torque (lb-ft)'].astype(str)
+data['0-60 MPH Time (seconds)'] = data['0-60 MPH Time (seconds)'].astype(str)
 data['Torque (lb-ft)'] = data['Torque (lb-ft)'].astype(str)
 data['0-60 MPH Time (seconds)'] = data['0-60 MPH Time (seconds)'].astype(str)
 
@@ -91,4 +90,4 @@ elif menu == 'Display Cars Price in Years':
     fig_top10.update_traces(texttemplate='%{text:,.2f}', textposition='outside')
 
     # Display the bar chart for the top 10 most expensive cars
-    st.plotly_chart(fig_top10, width='stretch')
+    st.plotly_chart(fig_top10, use_container_width=True)
