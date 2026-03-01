@@ -1,28 +1,28 @@
 import streamlit as st
 from transformers import pipeline
 
-# 1. ตั้งค่าหน้าจอและหัวข้อ (ตามแบบในรูปตัวอย่าง)
-st.set_page_config(page_title="Thai QA App", page_icon="💬")
+# 1. ตั้งค่าหน้าจอ
+st.set_page_config(page_title="Thai Question Answering App", page_icon="💬")
 
-# ส่วนหัวข้อพร้อมไอคอน
-st.markdown("# 💬 Thai Question Answering App")
+# ส่วนหัวข้อ (ตามแบบเป๊ะๆ)
+st.markdown("## 💬 Thai Question Answering App")
 st.write("ระบบตอบคำถามอัตโนมัติด้วยโมเดล WangchanBERTa (ภาษาไทย)")
 
-# 2. ฟังก์ชันโหลดโมเดล WangchanBERTa (ตามโจทย์ที่กำหนด)
+# 2. โหลดโมเดล (ตามโจทย์ #Practice)
 @st.cache_resource
 def load_qa_model():
-    # โมเดลจากรูปที่ระบุในโจทย์ #Practice
+    # ใช้โมเดลตามที่กำหนดในสไลด์
     model_name = "airesearch/wangchanberta-base-wiki-20210520-spm-finetune-qa"
     return pipeline("question-answering", model=model_name)
 
-# เรียกใช้ pipeline
 qa_pipeline = load_qa_model()
 
-# 3. ส่วนรับข้อมูล (Input) พร้อมไอคอนด้านหน้า
-question = st.text_input("❓ คำถามของคุณ:", value="ปราจีนบุรีมีมรดกโลกกี่แห่ง")
+# 3. ส่วนรับข้อมูลแบบ "ช่องเปล่า" (Empty Fields)
+# ใช้ placeholder แทน value เพื่อให้เป็นช่องว่างแต่ยังมีคำแนะนำจางๆ
+question = st.text_input("❓ คำถามของคุณ:", placeholder="พิมพ์คำถามที่นี่...")
 
 context = st.text_area("📖 เนื้อหาหรือบริบท:", 
-                       value="""ปราจีนบุรี (เดิมสะกดว่า ปราจิณบุรี) เป็นจังหวัดในภาคตะวันออกของประเทศไทย เป็นเมืองที่มีประวัติศาสตร์ยาวนาน มีการพบซากโบราณสถานในหลายพื้นที่ของจังหวัด นอกจากนี้ ยังมีแหล่งท่องเที่ยวทางธรรมชาติหลายแห่ง มีมรดกโลกทางธรรมชาติคือพื้นที่กลุ่มป่าดงพญาเย็น-เขาใหญ่""", 
+                       placeholder="วางเนื้อหาหรือบทความที่นี่เพื่อให้ AI หาคำตอบ...", 
                        height=200)
 
 # 4. ปุ่มกดค้นหา
@@ -32,13 +32,12 @@ if st.button("🔍 หาคำตอบ"):
             # ประมวลผล
             result = qa_pipeline(question=question, context=context)
             
-            # 5. ส่วนแสดงผลคำตอบ (ไฮไลท์สีเขียวตามรูปตัวอย่าง)
+            # 5. ส่วนแสดงผลคำตอบสีเขียว
             st.success("✅ คำตอบที่พบ:")
-            
-            # แสดงข้อความคำตอบ
             st.write(result['answer'])
             
-            # แสดงค่าความมั่นใจ (Score)
+            # แสดงค่าความมั่นใจ
             st.write(f"**ความมั่นใจ:** {result['score']:.2f}")
     else:
-        st.warning("กรุณากรอกทั้งคำถามและเนื้อหา")
+        # แจ้งเตือนถ้าลืมกรอกข้อมูล
+        st.warning("⚠️ กรุณากรอกทั้ง 'คำถาม' และ 'เนื้อหา' ก่อนกดปุ่ม")
